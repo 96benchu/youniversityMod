@@ -1,0 +1,14 @@
+{% load render_bundle from webpack_loader %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Example</title>
+  </head>
+
+  <body>
+    <div id="react-app"></div>
+    <div type="hidden" id="video-id" data-vid="{{ v_id }}"></div>
+    {% render_bundle 'video' %}
+  </body>
+</html>

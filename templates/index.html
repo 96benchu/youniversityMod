@@ -1,0 +1,166 @@
+{% load render_bundle from webpack_loader %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="UTF-8">
+    <script   src="https://code.jquery.com/jquery-3.0.0.js"   integrity="sha256-jrPLZ+8vDxt2FnE1zvZXCkCcebI/C8Dt5xyaQBjxQIo="   crossorigin="anonymous"></script>
+    <!-- <script type="text/javascript" src="/static/jquery-3.0.0.min.js"></script>  -->
+    <title>Example</title>
+
+  </head>
+  <style>
+  .questions{
+    border: black 2px solid;
+    width: 500px;
+    }
+    .comments{
+        position:relative;
+        left: 50px;
+        border: black 2px solid;
+        width:400px;
+        padding: 0px 8px;
+    }
+    button{
+        width: 50px;
+        height: 20px;
+    }
+  </style>
+
+  <script>
+   
+      // 2. This code loads the IFrame Player API code asynchronously.
+      
+
+    </script>
+
+
+  <script>
+    var numberofQ = 0;
+    var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: 'JhHMJCUmq28',
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !done) {
+          
+          done = true;
+        }
+      }
+      function stopVideo() {
+        player.stopVideo();
+      }
+    function transformTime(time)
+    {
+        var newTime = Math.floor(time);
+        var minutes = Math.floor(newTime/60.);
+        var seconds = ("0" + newTime%60).slice(-2);
+        return minutes.toString() + ":" + seconds.toString();
+    }
+    function addQuestion()
+    {
+        var question = $("#questionasker").val();
+        var time = player.getCurrentTime();
+        var newTime = transformTime(time);
+        $("#questionasker").val("");
+        var nofQ = numberofQ.toString();
+        var questionNumber = "Q" + nofQ
+        var commentNumber = "C" + nofQ
+
+        var questionbox = "<div class = 'questions' id = "+ questionNumber + ">" +
+        "<p style = 'float:left;'>" + question + "</span> <p class = 'time' style = 'float:right;'>" + newTime+ "</p></div>"
+
+            
+
+        var commentbox = "<div style = 'clear: both;' id = " + commentNumber + "><input type='text' placeholder = 'answer question'>" +
+         "<button type='button'>" + "submit</button></div>"
+         $("#Q" + nofQ + ".time").attr("onclick","seek(time)");
+        $("#commentsWrapper").append(questionbox);
+        $("#Q"+nofQ).append(commentbox);
+       
+        $("#C"+nofQ +" button").attr("onclick", 
+            "addComment(" + nofQ + ")");
+        numberofQ+=1;
+    }
+    function seek(time)
+    {
+        player.seekTo(time);
+    }
+    function addComment(cnumber)
+    {
+        
+        var c = cnumber.toString();
+
+        var comment = $("#C" + c + " input").val();
+        $("#C" + c + " input").val(" ");
+   
+        var commentbox = "<p style = 'clear: both;' class = 'comments'>" + comment + "</p>";
+        $("#C"+c).before(commentbox);
+    }
+    $( "form" ).submit(function( event ) {
+        addQuestion();
+    });
+
+
+  </script>
+
+  
+
+
+
+  <body>
+    
+
+    <div id="player"></div>
+    <div id="commentsWrapper">
+        <p>Questions</p>
+
+    </div>
+    <h1>Ask a question about the video!</h1>
+    <form>
+    <input type='text' id = "questionasker" placeholder = "question?"> 
+    <button type='button' onclick = "addQuestion()">Ask!</button>
+    </form>
+    
+
+    <script>
+    // addQuestion(1, "Does this work?");
+    // addQuestion(1, "Yes?");
+    // addComment("Hello?", "C0");
+    </script>
+
+
+  </body>
+</html>
+
+
+<!-- <div id="react-app"></div>
+    {% render_bundle 'home' %} -->
